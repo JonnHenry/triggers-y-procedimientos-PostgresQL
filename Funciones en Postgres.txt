@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_or_update_equipo(id_eq int8, nombre_eq varchar(255), categoria_eq varchar(255),descripcion_eq varchar(255),precio_unitario_eq float8, marca_eq varchar(255),observacion_eq varchar(255), estado_eq enum_equipos_estado, stock_eq integer) RETURNS boolean AS
+CREATE OR REPLACE FUNCTION create_or_update_equipo(id_eq int8, nombre_eq varchar(255),descripcion_eq varchar(255),precio_unitario_eq float8, marca_eq varchar(255),observacion_eq varchar(255), estado_eq enum_equipos_estado, stock_eq integer) RETURNS boolean AS
 $$
 DECLARE
 	stock_actual integer:=0;
@@ -14,7 +14,7 @@ BEGIN
 		INSERT INTO productos (id, nombre, descripcion, precio_unitario, categoria, fecha_creacion, fecha_actualizacion) 
 		VALUES (id_eq, nombre_eq, descripcion_eq, precio_unitario_eq, 'Equipo',CURRENT_DATE,CURRENT_DATE)
 		ON CONFLICT (id) DO UPDATE 
-  		SET nombre = nombre_eq, descripcion = descripcion_eq,precio_unitario=precio_unitario_eq,categoria='Equipo', fecha_actualizacion= CURRENT_DATE;
+  		SET nombre = nombre_eq, descripcion = descripcion_eq,precio_unitario=precio_unitario_eq, fecha_actualizacion= CURRENT_DATE;
 			
 		INSERT INTO equipos (id_producto, marca, observacion, estado, stock) 
 		VALUES (id_eq, marca_eq, observacion_eq, estado_eq, stock_eq)
@@ -57,8 +57,7 @@ BEGIN
 end;
 $$ language plpgsql;
 
-
-CREATE OR REPLACE FUNCTION create_or_update_instrumento(id_ins int8, nombre_ins varchar(255), descripcion_ins varchar(255),precio_unitario_ins float8, categoria_ins varchar(255), observacion_ins varchar(255), estado_ins enum_instrumentos_estado, stock_ins integer) RETURNS boolean AS
+CREATE OR REPLACE FUNCTION create_or_update_instrumento(id_ins int8, nombre_ins varchar(255), descripcion_ins varchar(255),precio_unitario_ins float8, observacion_ins varchar(255), estado_ins enum_instrumentos_estado, stock_ins integer) RETURNS boolean AS
 $$
 DECLARE
 	stock_actual integer:=0;
@@ -74,7 +73,7 @@ BEGIN
 		INSERT INTO productos (id, nombre, descripcion, precio_unitario, categoria, fecha_creacion, fecha_actualizacion ) 
 		VALUES (id_ins, nombre_ins, descripcion_ins, precio_unitario_ins, 'Instrumento',CURRENT_DATE,CURRENT_DATE)
 		ON CONFLICT (id) DO UPDATE 
-  		SET nombre = nombre_ins, descripcion = descripcion_ins, precio_unitario=precio_unitario_ins,categoria='Instrumento', fecha_actualizacion=CURRENT_DATE;
+  		SET nombre = nombre_ins, descripcion = descripcion_ins, precio_unitario=precio_unitario_ins,fecha_actualizacion=CURRENT_DATE;
 				
 		INSERT INTO instrumentos (id_producto,observacion,estado,stock) 
 		VALUES (id_ins,observacion_ins,estado_ins, stock_ins)
@@ -88,15 +87,16 @@ end;
 $$ language plpgsql;
 
 
-SELECT create_or_update_insumo(12,'Nombre de insumos','Ninguna Descripción',10.89,'Insumo','2019-06-29',1);
-SELECT create_or_update_equipo(14,'Cambio el nombre', 'Equipo','Ninguna Descripción',1089.99, 'Marca ','Ninguna Observación', 'Buen Estado',0);
-SELECT create_or_update_instrumento(14, 'Nombre de instrumentos', 'Ninguna Descripción',10.8968, 'Instrumento', 'Ninguna Observación', 'Buen Estado', 10);
+DROP FUNCTION create_or_update_equipo(id_eq int8, nombre_eq varchar(255),descripcion_eq varchar(255),precio_unitario_eq float8, marca_eq varchar(255),observacion_eq varchar(255), estado_eq enum_equipos_estado, stock_eq integer);
+DROP FUNCTION create_or_update_insumo(id_in int8, nombre_in varchar(255), descripcion_in varchar(255),precio_unitario_in float8,fecha_caducidad_in date, stock_in integer)
+DROP FUNCTION create_or_update_instrumento(id_ins int8, nombre_ins varchar(255), descripcion_ins varchar(255),precio_unitario_ins float8, observacion_ins varchar(255), estado_ins enum_instrumentos_estado, stock_ins integer)
 
-DROP FUNCTION create_or_update_equipo(bigint,character varying,character varying,character varying,double precision,character varying,character varying,enum_equipos_estado,integer);
-DROP FUNCTION create_or_update_insumo(id_in int8, nombre_in varchar(255), descripcion_in varchar(255),precio_unitario_in float8, categoria_in varchar(255),fecha_caducidad_in date, stock_in integer);
-DROP FUNCTION create_or_update_instrumento(id_ins int8, nombre_ins varchar(255), descripcion_ins varchar(255),precio_unitario_ins float8, categoria_ins varchar(255), observacion_ins varchar(255), estado_ins enum_instrumentos_estado, stock_ins integer);
 
-SELECT * FROM productos;
-SELECT * FROM equipos;
-SELECT * FROM insumos;
+SELECT create_or_update_equipo(1, 'Equipo de prueba','No existe descripción',52.45, 'Honda','No existe observación', 'Buen estado', 200);
+SELECT create_or_update_insumo(2, 'Insumo de prueba', 'No existe descripción',25.68,'22-05-2019', 10);
+SELECT create_or_update_instrumento(5, 'Insumo de prueba', 'No existe descripción',25.68, 'No existe observación', 'Buen estado', 100)
 
+
+SELECT * FROM equipos JOIN productos ON productos.id = equipos.id_producto;
+SELECT * FROM insumos JOIN productos ON productos.id = insumos.id_producto;
+SELECT * FROM instrumentos JOIN productos ON productos.id = instrumentos.id_producto;

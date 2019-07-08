@@ -1,0 +1,456 @@
+Obtener equipos
+Request
+Ruta:  /equipos/all
+tipo: get
+Response:
+Todo salio bien:
+{
+    "error": false,
+    "data": [
+        {
+            "id": "1",
+            "nombre": "Prueba 1",
+            "descripcion": "Ninguna observación",
+            "observacion": "Ninguna observación",
+            "precio_unitario": null,
+            "stock": 1,
+            "marca": "Prueba 1",
+            "estado": "Buen estado",
+            "categoria": "Equipo",
+            "fecha_creacion": "2019-06-28",
+            "fecha_actualizacion": "2019-06-28"
+        }
+    ]
+}
+Algo salio mal: 
+{
+"error": true,
+    	"data": [ ]
+}
+
+Obtener Insumos
+Request
+Ruta:  /insumos/all
+tipo: get
+Response:
+Todo salio bien:
+
+{
+    "error": false,
+  	"data": [
+               { 
+                    "categoria": 'Insumo',
+                    "id": 2,
+                    "nombre": "Nombre de prueba",
+                    "descripcion": "Ninguna descripción",
+                    "precio_unitario": 45.25,
+                    "fecha_caducidad": "17-02-2020"
+                },
+            ]
+
+}
+
+Algo salio mal: 
+{
+"error": true,
+    	"data": [ ]
+}
+
+
+
+Obtener Instrumentos
+Request
+Ruta:  /instrumentos/all
+tipo: get
+Response:
+Todo salio bien:
+
+{
+    "error": false,
+  	"data": [
+               { 
+                    "categoria": 'Instrumento',
+                    "id": 3,
+                    "nombre": "Este es un nombre de prueba",
+                    "descripcion": "Ninguna descripción",
+                    "precio_unitario": 45.25,
+                    "observacion": "Ninguna observación",
+                    "estado": "Buen Estado",
+                    "stock": 1
+                }
+            ]
+
+}
+
+Algo salio mal: 
+{
+"error": true,
+    	"data": [ ]
+}
+
+
+
+
+Ingreso o actualización de Equipos, Insumos, Instrumentos
+
+Request
+
+Ruta:  /data/new
+	tipo: post
+Body: 
+	{
+           Para cada categoria debe ser asi:
+               1=Equipo,
+               2=Insumo,
+               3=Instrumento
+           data: [
+               {
+                   categoria: 1,
+                   id: id(Int),
+                   nombre: 'Cadena',
+                   descripcion: 'Descripcion',
+                   precio_unitario: 25.56895,
+                   marca: 'Marca',
+                   observacion: 'Observacion XD',
+                   estado: 'Dañado'||'Buen estado'||'Reparación',
+                   stock: Entero (Cuantos llega)
+               },
+               { 
+                   categoria: 2
+                   id: id(Int),
+                   nombre: 'cadena(String)',
+                   descripcion: 'Descripción XD',
+                   precio_unitario: 15.36,
+                   stock: Entero,(Cuantos llega y existe actualiza)
+                   fecha_caducidad: "17-02-2020"
+               },
+               {
+                   categoria: 3,
+                   id: id(Integer),
+                   nombre: "Nombre",
+                   descripcion: "",
+                   precio_unitario: 85.69,
+                   observacion: "Observacion XD",
+                   estado: 'Dañado'||'Buen estado'||'Reparación',
+                   stock: Entero (Cuantos llega)
+               }
+           ]
+       }
+Response: 
+Todo salio bien 
+{
+'message': 'Todos los productos se han ingresado con exito',
+      'insertedAll': true,
+      'idFails': []
+     
+}
+
+Alguno no se ingreso:
+{
+      'message': errorArray,
+      'insertedAll': false,
+'idFails': [idFails]
+}
+
+Actualización de la información de los productos
+Quitar de los ya existentes se envia la cantidad solo a substraer
+Request:  
+Ruta:  /data/update/substract 
+
+Tipo: post
+
+Body:
+{
+Para cada categoría debe ser asi:
+               1=Equipo,
+               2=Insumo,
+               3=Instrumento
+
+data: [
+{	categoria: 1,
+     		id: id(Int),
+      	estado: 'Dañado'||'Buen estado'||'Reparación',
+      	stock: Entero (Cuantos llega),
+observacion: 'Observacion XD',
+		
+},
+{
+categoria: 2
+           id: id(Int),
+           stock: Entero,(Cuantos llega y existe actualiza)
+},
+{
+	categoria: 3,
+           	id: id(Integer),
+          	observacion: "Observacion XD",
+           	estado: 'Dañado'||'Buen estado'||'Reparación',
+           stock: Entero (Cuantos llega)
+}
+]
+Response:
+Todo salio bien 
+{
+'message': 'Todos los productos se han actualizado con éxito',
+      'updatedAll': true,
+      'idFails': []
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Todos los productos se han actualizado con éxito',
+      'updatedAll': true,
+      'idFails': [idFails]
+}
+
+Actualizar de los equipos
+Para poder actualizar un equipo en específico
+Request:  
+Ruta:  /equipos/update/:id
+
+Tipo: post
+
+Body:
+En el body se puede enviar a actualizar un solo campo o varios campos que esten dentro de equipos 
+{
+           "dataUpdate": {
+               nombre: "Equipo de prueba 1"
+               descripcion: 'Descripcion',
+               precio_unitario: 25.56895,
+               marca: 'Marca',
+               observacion: 'Observacion XD',
+               estado: 'Dañado'||'Buen estado'||'Reparación',
+               stock: Entero (Cuantos llega)
+           }
+       }
+
+Response:
+Todo salio bien 
+{
+'message': 'Todos los productos se han actualizado con éxito',
+      'updated': true
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Error al actualizar el equipo',
+      'updated': false
+     
+}
+
+
+Actualizar de los insumos ya existentes
+
+Para poder actualizar un equipo en específico
+Request:  
+Ruta:  /insumos/update/:id
+
+Tipo: post
+
+Body:
+{
+           "dataUpdate": {
+               nombre: "Equipo de prueba 1"
+               descripcion: 'Descripción XD',
+               precio_unitario: 15.36,
+               stock: Entero,(Cuantos llega y existe)
+           }
+       }
+
+Response:
+Todo salio bien 
+{
+'message': 'Todos los productos se han actualizado con éxito',
+      'updated': true
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Error al actualizar el equipo',
+      'updated': false
+     
+}
+
+Actualizar de los instrumentos ya existentes
+
+Para poder actualizar un equipo en específico
+Request:  
+Ruta:  /instrumentos/update/:id
+
+Tipo: post
+
+Body:
+{
+           "dataUpdate": {
+               nombre: "Nombre",
+               descripcion: "",
+                   precio_unitario: 85.69,
+                   observacion: "Observacion XD",
+                   estado: 'Dañado'||'Buen estado'||'Reparación',
+                   stock: Entero (Cuantos llega)
+           }
+       }
+
+Response:
+Todo salio bien 
+{
+'message': 'Todos los productos se han actualizado con éxito',
+      'updated': true
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Error al actualizar el equipo',
+      'updated': false
+     
+}
+
+
+
+
+Crear inventarios de control para saber los productos que actualmente hay
+
+Request:  
+Ruta:  /inventarios/control/new/
+
+Tipo: post
+
+Body:
+
+{
+	'nombre': 'Nombre del inventario exmp: Inventario Enero',
+	'descripción': 'Descripción del inventario'
+}
+	
+Response:
+Todo salio bien 
+{
+'message': 'El inventario se ha creado con éxito.',
+      'createdAll': true,
+	'dataInventario':
+{
+'id': idEntero,
+'nombre': 'nombre',
+'descripcion': 'descripción del inventario',
+				'fecha_creacion': 'fecha_creacion',
+				'fecha_actualizacion': 'fecha_actualizacion'
+			}
+	'dataProduct': [{
+	'id': idEntero,
+	'nombre': 'nombre del inventario',
+	'descripción': 'Descripción del usuario',
+	'categoria': 'Categoria: Equipo,Insumo,Instrumento',
+	'cantidad': cantidad(Entero)
+}]
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Error, vuelva a intentarlo',
+     	'createdAll': false,
+      'dataInventario': [],
+	'dataProduct': []
+}
+
+Crear inventarios de control para saber los productos que actualmente hay
+
+Request:  
+Ruta:  /inventarios/receive
+
+Tipo: post
+
+Body:
+{
+	'nombre': 'Nombre del inventario exmp: Inventario Enero',
+	'descripción': 'Descripción del inventario'
+}
+	
+Response:
+Todo salio bien 
+{
+'message': 'El inventario se ha creado con éxito.',
+      'createdAll': true,
+	'dataInventario':
+{
+'id': idEntero,
+'nombre': 'nombre',
+'descripcion': 'descripción del inventario',
+				'fecha_creacion': 'fecha_creacion',
+				'fecha_actualizacion': 'fecha_actualizacion'
+			}
+	'dataProduct': [{
+	'id': idEntero,
+	'nombre': 'nombre del inventario',
+	'descripción': 'Descripción del usuario',
+	'categoria': 'Categoria: Equipo,Insumo,Instrumento',
+	'cantidad': cantidad(Entero)
+}]
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Error, vuelva a intentarlo',
+     	'createdAll': false,
+      'dataInventario': [],
+	'dataProduct': []
+}
+
+
+Metodo de busqueda con diferentes criterios
+El método consiste en buscar y hacer un filtro de lo que se desea buscar es decir para la consulta este emplea en AND para dicho procedimiento
+
+Request:  
+Ruta:  /inventarios/receive
+
+Tipo: post
+
+Body:
+{
+Para cada categoría debe ser asi:
+               1=Equipo,
+               2=Insumo,
+               3=Instrumento
+
+data: {
+	'nombre': 'Nombre del inventario exmp: Inventario Enero',
+	'descripción': 'Descripción del inventario'
+}
+	
+Response:
+Todo salio bien 
+{
+'message': 'El inventario se ha creado con éxito.',
+      'createdAll': true,
+	'dataInventario':
+{
+'id': idEntero,
+'nombre': 'nombre',
+'descripcion': 'descripción del inventario',
+				'fecha_creacion': 'fecha_creacion',
+				'fecha_actualizacion': 'fecha_actualizacion'
+			}
+	'dataProduct': [{
+	'id': idEntero,
+	'nombre': 'nombre del inventario',
+	'descripción': 'Descripción del usuario',
+	'categoria': 'Categoria: Equipo,Insumo,Instrumento',
+	'cantidad': cantidad(Entero)
+}]
+     
+}
+
+Alguno no se ingresó:
+{
+      'message': 'Error, vuelva a intentarlo',
+     	'createdAll': false,
+      'dataInventario': [],
+	'dataProduct': []
+}
+
+
+

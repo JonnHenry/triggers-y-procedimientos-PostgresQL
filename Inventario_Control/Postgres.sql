@@ -8,13 +8,8 @@ BEGIN
 	INSERT INTO inventario_controles(id_inventario,persona_realiza) values(id_inv,session_user::TEXT);
 
 	INSERT INTO inventario_productos(id_producto,cantidad,id_inventario) 
-	SELECT id, stock,id_inv FROM equipos JOIN productos ON productos.id = equipos.id_producto;
+	SELECT id, stock,id_inv FROM productos;
 	
-	INSERT INTO inventario_productos(id_producto,cantidad,id_inventario) 
-	SELECT id, stock,id_inv FROM instrumentos JOIN productos ON productos.id = instrumentos.id_producto;
-	
-	INSERT INTO inventario_productos(id_producto,cantidad,id_inventario) 
-	SELECT id, stock,id_inv FROM insumos JOIN productos ON productos.id = insumos.id_producto;
 	RETURN TRUE;
 	exception 
     when others then

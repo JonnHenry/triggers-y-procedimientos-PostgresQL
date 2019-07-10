@@ -10,16 +10,16 @@ BEGIN
 	Select count(id_producto) INTO exist_instrumentos FROM instrumentos WHERE id_producto=id_eq;
 	sum_existen:=exist_insumos+exist_instrumentos;
 	IF sum_existen = 0 THEN
-		SELECT stock INTO stock_actual FROM equipos WHERE id_producto = id_eq;
-		INSERT INTO productos (id, nombre, descripcion, precio_unitario, categoria, fecha_creacion, fecha_actualizacion) 
-		VALUES (id_eq, nombre_eq, descripcion_eq, precio_unitario_eq, 'Equipo',CURRENT_DATE,CURRENT_DATE)
+		SELECT stock INTO stock_actual FROM productos WHERE id = id_eq;
+		INSERT INTO productos (id, nombre, descripcion, precio_unitario, stock,categoria, fecha_creacion, fecha_actualizacion) 
+		VALUES (id_eq, nombre_eq, descripcion_eq, precio_unitario_eq,stock_eq, 'Equipo',CURRENT_DATE,CURRENT_DATE)
 		ON CONFLICT (id) DO UPDATE 
-  		SET nombre = nombre_eq, descripcion = descripcion_eq,precio_unitario=precio_unitario_eq, fecha_actualizacion= CURRENT_DATE;
+  		SET nombre = nombre_eq, descripcion = descripcion_eq,precio_unitario=precio_unitario_eq, stock=stock_actual+stock_eq,fecha_actualizacion= CURRENT_DATE;
 			
-		INSERT INTO equipos (id_producto, marca, observacion, estado, stock) 
-		VALUES (id_eq, marca_eq, observacion_eq, estado_eq, stock_eq)
+		INSERT INTO equipos (id_producto, marca, observacion, estado) 
+		VALUES (id_eq, marca_eq, observacion_eq, estado_eq)
 		ON CONFLICT (id_producto) DO UPDATE 
-  		SET marca = marca_eq, observacion = observacion_eq, estado=estado_eq, stock=stock_actual+stock_eq;
+  		SET marca = marca_eq, observacion = observacion_eq, estado=estado_eq;
 		RETURN TRUE;
 	ELSE
 		RETURN FALSE;
@@ -45,16 +45,16 @@ BEGIN
 	Select count(id_producto) INTO exist_instrumentos FROM instrumentos WHERE id_producto=id_in;
 	sum_existen:=exist_equipos+exist_instrumentos;
 	IF sum_existen = 0 THEN
-		SELECT stock INTO stock_actual FROM insumos WHERE id_producto = id_in;
-		INSERT INTO productos (id, nombre, descripcion, precio_unitario, categoria, fecha_creacion, fecha_actualizacion ) 
-		VALUES (id_in, nombre_in, descripcion_in, precio_unitario_in, 'Insumo',CURRENT_DATE,CURRENT_DATE)
+		SELECT stock INTO stock_actual FROM productos WHERE id = id_in;
+		INSERT INTO productos (id, nombre, descripcion, precio_unitario, stock,categoria, fecha_creacion, fecha_actualizacion ) 
+		VALUES (id_in, nombre_in, descripcion_in, precio_unitario_in,stock_in ,'Insumo',CURRENT_DATE,CURRENT_DATE)
 		ON CONFLICT (id) DO UPDATE 
-  		SET nombre = nombre_in, descripcion = descripcion_in, precio_unitario=precio_unitario_in, fecha_actualizacion=CURRENT_DATE;
+  		SET nombre = nombre_in, descripcion = descripcion_in, stock=stock_actual+stock_in,precio_unitario=precio_unitario_in, fecha_actualizacion=CURRENT_DATE;
 				
-		INSERT INTO insumos (id_producto,fecha_caducidad,stock) 
-		VALUES (id_in, fecha_caducidad_in, stock_in)
+		INSERT INTO insumos (id_producto,fecha_caducidad) 
+		VALUES (id_in, fecha_caducidad_in)
 		ON CONFLICT (id_producto) DO UPDATE 
-  		SET fecha_caducidad = fecha_caducidad_in, stock=stock_actual+stock_in;
+  		SET fecha_caducidad = fecha_caducidad_in;
 		RETURN TRUE;
 	ELSE 
 		RETURN FALSE;
@@ -80,16 +80,16 @@ BEGIN
 	Select count(id_producto) INTO exist_insumos FROM insumos WHERE id_producto=id_ins;
 	sum_existen:=exist_equipos+exist_insumos;
 	IF sum_existen = 0 THEN
-		SELECT stock INTO stock_actual FROM instrumentos WHERE id_producto = id_ins;
-		INSERT INTO productos (id, nombre, descripcion, precio_unitario, categoria, fecha_creacion, fecha_actualizacion ) 
-		VALUES (id_ins, nombre_ins, descripcion_ins, precio_unitario_ins, 'Instrumento',CURRENT_DATE,CURRENT_DATE)
+		SELECT stock INTO stock_actual FROM productos WHERE id = id_ins;
+		INSERT INTO productos (id, nombre, descripcion, precio_unitario, stock,categoria, fecha_creacion, fecha_actualizacion ) 
+		VALUES (id_ins, nombre_ins, descripcion_ins, precio_unitario_ins, stock_ins,'Instrumento',CURRENT_DATE,CURRENT_DATE)
 		ON CONFLICT (id) DO UPDATE 
-  		SET nombre = nombre_ins, descripcion = descripcion_ins, precio_unitario=precio_unitario_ins,fecha_actualizacion=CURRENT_DATE;
+  		SET nombre = nombre_ins, descripcion = descripcion_ins, precio_unitario=precio_unitario_ins,stock = stock_actual+stock_ins,fecha_actualizacion=CURRENT_DATE;
 				
-		INSERT INTO instrumentos(id_producto,observacion,estado,stock) 
-		VALUES (id_ins,observacion_ins,estado_ins, stock_ins)
+		INSERT INTO instrumentos(id_producto,observacion,estado) 
+		VALUES (id_ins,observacion_ins,estado_ins)
 		ON CONFLICT (id_producto) DO UPDATE 
-  		SET observacion=observacion_ins, estado=estado_ins,stock = stock_actual+stock_ins;
+  		SET observacion=observacion_ins, estado=estado_ins;
 		RETURN TRUE;
 	ELSE 
 		RETURN FALSE;

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION control_inventario_productos(anyelement) RETURNS json AS
+CREATE OR REPLACE FUNCTION prueba() RETURNS json AS
 $$
 DECLARE
 	rec record;
@@ -29,3 +29,8 @@ BEGIN
 		RETURN array_inv;
 end;
 $$ language plpgsql;
+
+
+
+
+{"{\"id\":1,\"nombre\":\"Inventario 1 de prueba\",\"descripcion\":\"Descripcion de prueba\",\"fecha_creacion\":\"2019-07-07T19:20:01.367147\",\"fecha_actualizacion\":\"2019-07-07T19:20:01.367147\",\"persona_realiza\":\"admin\",\"productos\":[{\"id\":1,\"nombre\":\"Equipo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Equipo\",\"precio_unitario\":9.99,\"cantidad\":\"10\"},{\"id\":2,\"nombre\":\"Equipo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Equipo\",\"precio_unitario\":99.99,\"cantidad\":\"10\"},{\"id\":5,\"nombre\":\"Insumo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Instrumento\",\"precio_unitario\":85.69,\"cantidad\":\"100\"},{\"id\":6,\"nombre\":\"Insumo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Instrumento\",\"precio_unitario\":85.69,\"cantidad\":\"100\"},{\"id\":4,\"nombre\":\"Instrumento\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Insumo\",\"precio_unitario\":99.99,\"cantidad\":\"1\"},{\"id\":3,\"nombre\":\"Instrumento\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Insumo\",\"precio_unitario\":99.99,\"cantidad\":\"1\"}]}","{\"id\":2,\"nombre\":\"2\",\"descripcion\":\"Prueba\",\"fecha_creacion\":\"2019-07-07T21:39:46.225172\",\"fecha_actualizacion\":\"2019-07-07T21:39:46.225172\",\"persona_realiza\":\"postgres\",\"productos\":[{\"id\":1,\"nombre\":\"Equipo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Equipo\",\"precio_unitario\":9.99,\"cantidad\":\"10\"},{\"id\":2,\"nombre\":\"Equipo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Equipo\",\"precio_unitario\":99.99,\"cantidad\":\"10\"},{\"id\":5,\"nombre\":\"Insumo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Instrumento\",\"precio_unitario\":85.69,\"cantidad\":\"100\"},{\"id\":6,\"nombre\":\"Insumo de prueba\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Instrumento\",\"precio_unitario\":85.69,\"cantidad\":\"100\"},{\"id\":4,\"nombre\":\"Instrumento\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Insumo\",\"precio_unitario\":99.99,\"cantidad\":\"1\"},{\"id\":3,\"nombre\":\"Instrumento\",\"descripcion\":\"No existe descripción\",\"categoria\":\"Insumo\",\"precio_unitario\":99.99,\"cantidad\":\"1\"}]}"}

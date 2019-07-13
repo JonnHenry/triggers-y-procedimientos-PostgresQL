@@ -65,7 +65,7 @@ $$ language plpgsql
 
 
 
-CREATE OR REPLACE FUNCTION termina_tratamiento(id_tratamiento_trat integer) RETURNS boolean AS
+CREATE OR REPLACE FUNCTION termina_tratamiento(id_tratamiento_trat integer, insumos_desechados integer[]) RETURNS boolean AS
 $$
 DECLARE
 	rec record;
@@ -74,14 +74,16 @@ BEGIN
 	FOR rec IN SELECT id_producto,productos.categoria, tratamiento_productos.cantidad_producto FROM tratamiento_productos JOIN productos ON productos.id = tratamiento_productos.id_producto JOIN tratamientos ON tratamiento_productos.id_tratamiento=tratamientos.id WHERE id_tratamiento=id_tratamiento_trat
   	LOOP
 		IF rec.categoria = 'Equipo' THEN
-			SELECT stock into cantidad_prod from equipos WHERE id_producto=rec.id_producto;
-			UPDATE equipos SET stock = cantidad_prod + rec.cantidad_producto WHERE id_producto=rec.id_producto;
+			--SELECT stock into cantidad_prod from equipos WHERE id_producto=rec.id_producto;
+			UPDATE equipos SET stock = stock + rec.cantidad_producto WHERE id_producto=rec.id_producto;
 		ELSIF rec.categoria = 'Insumo' THEN
-			SELECT stock into cantidad_prod from insumos WHERE id_producto=rec.id_producto;
-			UPDATE insumos SET stock = cantidad_prod + rec.cantidad_producto WHERE id_producto=rec.id_producto;
+			--SELECT stock into cantidad_prod from insumos WHERE id_producto=rec.id_producto;
+			UPDATE insumos SET stock = stock + rec.cantidad_producto WHERE id_producto=rec.id_producto;
 		ELSIF rec.categoria = 'Instrumento' THEN
-			SELECT stock into cantidad_prod from instrumentos WHERE id_producto=rec.id_producto;
-			UPDATE instrumentos SET stock = cantidad_prod + rec.cantidad_producto WHERE id_producto=rec.id_producto;
+			--SELECT stock into cantidad_prod from instrumentos WHERE id_producto=rec.id_producto;
+			IF insumos_desechados @> rec.id_producto THEN
+				UPDATE instrumentos SET stock = stock + rec.cantidad_producto WHERE id_producto=rec.id_producto;
+			END IF;	
 		ELSE
 			RETURN FALSE;
 		END IF;

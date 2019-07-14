@@ -1,3 +1,4 @@
+--Crea la funciones de control_inventario pasando como parametros los datos necesarios
 CREATE OR REPLACE FUNCTION control_inventario(nombre_inv varchar(255),descripcion_inv varchar(255), observacion_inv varcahr(255)) RETURNS boolean AS
 $$
 DECLARE
@@ -18,5 +19,5 @@ BEGIN
 end;
 $$ language plpgsql;
 
-
+--Borra la función 
 DROP FUNCTION control_inventario(character varying,character varying)

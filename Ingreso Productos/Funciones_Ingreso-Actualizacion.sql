@@ -1,3 +1,4 @@
+--Crea las funciones para poder ingresar equipos,insumos,instrumentos
 CREATE OR REPLACE FUNCTION create_or_update_equipo(id_eq int8, nombre_eq varchar(255),descripcion_eq varchar(255),precio_unitario_eq float8, marca_eq varchar(255),observacion_eq varchar(255), estado_eq enum_equipos_estado, stock_eq integer) RETURNS boolean AS
 $$
 DECLARE
@@ -102,17 +103,7 @@ BEGIN
 end;
 $$ language plpgsql;
 
-
+--Borra las funciones creadas
 DROP FUNCTION create_or_update_equipo(id_eq int8, nombre_eq varchar(255),descripcion_eq varchar(255),precio_unitario_eq float8, marca_eq varchar(255),observacion_eq varchar(255), estado_eq enum_equipos_estado, stock_eq integer);
 DROP FUNCTION create_or_update_insumo(id_in int8, nombre_in varchar(255), descripcion_in varchar(255),precio_unitario_in float8,fecha_caducidad_in date, stock_in integer);
 DROP FUNCTION create_or_update_instrumento(id_ins int8, nombre_ins varchar(255), descripcion_ins varchar(255),precio_unitario_ins float8, observacion_ins varchar(255), estado_ins enum_instrumentos_estado, stock_ins integer);
-
-
-SELECT create_or_update_equipo(1, 'Equipo de prueba','No existe descripción',52.45, 'Honda','No existe observación', 'Buen estado', 200);
-SELECT create_or_update_insumo(2, 'Insumo de prueba', 'No existe descripción',25.68,'22-05-2019', 10);
-SELECT create_or_update_instrumento(5, 'Insumo de prueba', 'No existe descripción',25.68, 'No existe observación', 'Buen estado', 100)
-
-
-SELECT * FROM equipos JOIN productos ON productos.id = equipos.id_producto;
-SELECT * FROM insumos JOIN productos ON productos.id = insumos.id_producto;
-SELECT * FROM instrumentos JOIN productos ON productos.id = instrumentos.id_producto;

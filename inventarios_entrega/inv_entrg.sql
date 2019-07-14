@@ -33,5 +33,5 @@ BEGIN
 end;
 $$ language plpgsql;
 
---Para poder borrar la funcion que se creo de entrega_inventario y poder bajar la base de datos
+--Para poder borrar la funcion que se creo de entrega_inventario
 DROP FUNCTION entrega_inventario(character varying,character varying,character varying,json,character varying);

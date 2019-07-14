@@ -1,3 +1,4 @@
+--Para poder crear un inventario de entrega y este puede estar varias personas que dejar diferentes dias
 CREATE OR REPLACE FUNCTION entrega_inventario(nombre_inv varchar(255),descripcion_inv varchar(255), observacion_inv varchar(255),productos_inv json,persona_entrega varchar(255)) RETURNS boolean AS
 $$
 DECLARE
@@ -32,7 +33,5 @@ BEGIN
 end;
 $$ language plpgsql;
 
-
-select entrega_inventario('Inventario prueba','Descripcion de prueba', 'Observacion de prueba','[{ "id_producto": 2, "cantidad":2 }, { "id_producto": 3, "cantidad":8 }]','0105476097')
-
+--Para poder borrar la funcion que se creo de entrega_inventario y poder bajar la base de datos
 DROP FUNCTION entrega_inventario(character varying,character varying,character varying,json,character varying);

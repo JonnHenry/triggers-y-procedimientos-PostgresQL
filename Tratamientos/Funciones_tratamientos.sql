@@ -1,3 +1,5 @@
+
+--Función para crear un tratamiento con los productos
 CREATE OR REPLACE FUNCTION ingreso_tratamiento( nombre_trat varchar(255),precio_trat float,descripcion_trat varchar(25),datos_prod json) RETURNS boolean AS
 $$
 DECLARE
@@ -19,39 +21,20 @@ END;
 $$ language plpgsql
 
 
+--Con esta funcion se resta del stock todos los productos que son necesarios para el tratamiento
+--esto es debido a que talves otro doctor quiera hacer el mismo tratamiento pero si no cuenta con lo necesario
+--no va a poder hacer y este sera notificado que no puede realizar tal tratamiento.
 CREATE OR REPLACE FUNCTION inicia_tratamiento(id_tratamiento_trat integer) RETURNS boolean AS
 $$
 DECLARE
 	rec record;
-	cantidad_prod int;
 BEGIN
-	FOR rec IN SELECT id_producto,productos.categoria, tratamiento_productos.cantidad_producto FROM tratamiento_productos JOIN productos ON productos.id = tratamiento_productos.id_producto JOIN tratamientos ON tratamiento_productos.id_tratamiento=tratamientos.id WHERE id_tratamiento=id_tratamiento_trat
+	FOR rec IN SELECT id_producto,stock,cantidad_producto FROM tratamiento_productos JOIN productos ON productos.id = tratamiento_productos.id_producto JOIN tratamientos ON tratamiento_productos.id_tratamiento=tratamientos.id WHERE id_tratamiento=id_tratamiento_trat
   	LOOP
-		IF rec.categoria = 'Equipo' THEN
-			SELECT stock into cantidad_prod from equipos WHERE id_producto=rec.id_producto;
-			IF cantidad_prod - rec.cantidad_producto>0 THEN
-				UPDATE equipos SET stock = cantidad_prod - rec.cantidad_producto WHERE id_producto=rec.id_producto;
-			ELSE
-				RETURN FALSE;
-			END IF;
-			
-		ELSIF rec.categoria = 'Insumo' THEN
-			SELECT stock into cantidad_prod from insumos WHERE id_producto=rec.id_producto;
-			IF cantidad_prod - rec.cantidad_producto > 0 THEN
-				UPDATE insumos SET stock = cantidad_prod - rec.cantidad_producto WHERE id_producto=rec.id_producto;
-			ELSE
-				RETURN FALSE;
-			END IF;
-		ELSIF rec.categoria = 'Instrumento' THEN
-			SELECT stock into cantidad_prod from instrumentos WHERE id_producto=rec.id_producto;
-			IF cantidad_prod - rec.cantidad_producto > 0 THEN
-				UPDATE instrumentos SET stock = cantidad_prod - rec.cantidad_producto WHERE id_producto=rec.id_producto;
-			ELSE
-				RETURN FALSE;
-			END IF;
+		IF rec.stock - rec.cantidad_producto>-1 THEN
+			UPDATE productos SET stock = rec.stock - rec.cantidad_producto WHERE id=rec.id_producto;
 		ELSE
 			RETURN FALSE;
-			
 		END IF;
 	END LOOP;
 	RETURN TRUE;
@@ -61,31 +44,22 @@ BEGIN
         RAISE INFO 'Error State:%', SQLSTATE;
 		RETURN FALSE;
 END;
-$$ language plpgsql
+$$ language plpgsql;
 
 
 
-CREATE OR REPLACE FUNCTION termina_tratamiento(id_tratamiento_trat integer, insumos_desechados integer[]) RETURNS boolean AS
+--Función que permite finalizar un tratamiento, esto es debido a que este cuando se haya terminado ya los instrumentos y productos se deben 
+--de devolver al estante y otro doctor o odontologo podra hacer uso de ello.
+
+CREATE OR REPLACE FUNCTION termina_tratamiento(id_tratamiento_trat integer, desechados integer[]) RETURNS boolean AS
 $$
 DECLARE
 	rec record;
-	cantidad_prod int;
 BEGIN
-	FOR rec IN SELECT id_producto,productos.categoria, tratamiento_productos.cantidad_producto FROM tratamiento_productos JOIN productos ON productos.id = tratamiento_productos.id_producto JOIN tratamientos ON tratamiento_productos.id_tratamiento=tratamientos.id WHERE id_tratamiento=id_tratamiento_trat
+	FOR rec IN SELECT id_producto::integer,stock,cantidad_producto FROM tratamiento_productos JOIN productos ON productos.id = tratamiento_productos.id_producto WHERE id_tratamiento=id_tratamiento_trat
   	LOOP
-		IF rec.categoria = 'Equipo' THEN
-			--SELECT stock into cantidad_prod from equipos WHERE id_producto=rec.id_producto;
-			UPDATE equipos SET stock = stock + rec.cantidad_producto WHERE id_producto=rec.id_producto;
-		ELSIF rec.categoria = 'Insumo' THEN
-			--SELECT stock into cantidad_prod from insumos WHERE id_producto=rec.id_producto;
-			UPDATE insumos SET stock = stock + rec.cantidad_producto WHERE id_producto=rec.id_producto;
-		ELSIF rec.categoria = 'Instrumento' THEN
-			--SELECT stock into cantidad_prod from instrumentos WHERE id_producto=rec.id_producto;
-			IF insumos_desechados @> rec.id_producto THEN
-				UPDATE instrumentos SET stock = stock + rec.cantidad_producto WHERE id_producto=rec.id_producto;
-			END IF;	
-		ELSE
-			RETURN FALSE;
+		IF NOT (SELECT rec.id_producto = ANY (desechados::int[])) THEN
+			UPDATE productos SET stock = rec.stock + rec.cantidad_producto WHERE id=rec.id_producto;
 		END IF;
 	END LOOP;
 	RETURN TRUE;
@@ -94,15 +68,15 @@ BEGIN
         RAISE INFO 'Error Name:%',SQLERRM;
         RAISE INFO 'Error State:%', SQLSTATE;
 		RETURN FALSE;
+	RETURN TRUE;
 END;
-$$ language plpgsql
+$$ language plpgsql;
 
 
 
-
-
-
+--Para borrar las funciones y bajar la base de datos del servidor
+DROP Function inicia_tratamiento(id_tratamiento_trat integer);
+DROP Function termina_tratamiento(id_tratamiento_trat integer, desechados integer[]);
 DROP Function ingreso_tratamiento( nombre_trat varchar(255),precio_trat float,descripcion_trat varchar(25),datos_prod json);
 
-select ingreso_tratamiento('tratamiento de prueba',25.45,'tratamiento de prueba','[{ "id": 1, "cantidad":2 }, { "id": 2, "cantidad":8 }]');
 

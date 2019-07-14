@@ -73,7 +73,6 @@ END;
 $$ language plpgsql;
 
 
-
 --Para borrar las funciones y bajar la base de datos del servidor
 DROP Function inicia_tratamiento(id_tratamiento_trat integer);
 DROP Function termina_tratamiento(id_tratamiento_trat integer, desechados integer[]);

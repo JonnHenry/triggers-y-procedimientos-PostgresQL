@@ -1,15 +1,12 @@
 --Crea la funciones de control_inventario pasando como parametros los datos necesarios
-CREATE OR REPLACE FUNCTION control_inventario(nombre_inv varchar(255),descripcion_inv varchar(255), observacion_inv varcahr(255)) RETURNS boolean AS
+CREATE OR REPLACE FUNCTION control_inventario(nombre_inv varchar(255),descripcion_inv varchar(255), observacion_inv varchar(255)) RETURNS boolean AS
 $$
 DECLARE
 	id_inv integer:=0;
 BEGIN
-
     INSERT INTO inventarios(nombre,descripcion,observacion) values(nombre_inv,descripcion_inv, observacion_inv) RETURNING id INTO id_inv;
-	INSERT INTO inventario_controles(id_inventario,persona_realiza) values(id_inv,session_user::TEXT);
-
-	INSERT INTO inventario_productos(id_producto,cantidad,id_inventario) 
-	
+	INSERT INTO inventario_controles(id_inventario,persona_realiza) values(id_inv,session_user::TEXT);	
+	INSERT INTO inventario_productos(id,cantidad,id_inventario) SELECT id, stock,id_inv FROM productos;
 	RETURN TRUE;
 	exception 
     when others then

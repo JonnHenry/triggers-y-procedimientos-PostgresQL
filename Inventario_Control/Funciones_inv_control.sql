@@ -6,7 +6,7 @@ DECLARE
 BEGIN
     INSERT INTO inventarios(nombre,descripcion,observacion) values(nombre_inv,descripcion_inv, observacion_inv) RETURNING id INTO id_inv;
 	INSERT INTO inventario_controles(id_inventario,persona_realiza) values(id_inv,session_user::TEXT);	
-	INSERT INTO inventario_productos(id,cantidad,id_inventario) SELECT id, stock,id_inv FROM productos;
+	INSERT INTO inventario_productos(id_producto,cantidad,id_inventario) SELECT id, stock,id_inv FROM productos;
 	RETURN TRUE;
 	exception 
     when others then

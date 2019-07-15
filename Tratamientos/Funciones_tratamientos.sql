@@ -72,9 +72,32 @@ BEGIN
 END;
 $$ language plpgsql;
 
+--Ingresa un producto a un tratamiento y si ya esta ingresado actualiza la cantidad enviada con la antigua
+CREATE OR REPLACE FUNCTION ingreso_productos_tratamiento( id_tratamiento_trat integer,datos_prod json) RETURNS boolean AS
+$$
+DECLARE
+    i json;
+	id_int integer;
+BEGIN
+	FOR i IN SELECT * FROM json_array_elements(datos_prod)
+  	LOOP
+		INSERT INTO tratamiento_productos(id_tratamiento,id_producto,cantidad_producto) values(id_tratamiento_trat,(i->>'id_producto')::int,(i->>'cantidad')::int)
+		ON CONFLICT (id_tratamiento,id_producto) DO UPDATE 
+  		SET cantidad_producto = tratamiento_productos.cantidad_producto+(i->>'cantidad')::int;
+	END LOOP;
+	RETURN TRUE;
+	EXCEPTION
+    WHEN OTHERS THEN
+        RAISE INFO 'Error Name:%',SQLERRM;
+        RAISE INFO 'Error State:%', SQLSTATE;
+		RETURN FALSE;
+END;
+$$ language plpgsql
+
 
 --Para borrar las funciones y bajar la base de datos del servidor
 DROP Function inicia_tratamiento(id_tratamiento_trat integer);
+DROP FUNCTION ingreso_productos_tratamiento( id_tratamiento_trat,datos_prod json)
 DROP Function termina_tratamiento(id_tratamiento_trat integer, desechados integer[]);
 DROP Function ingreso_tratamiento( nombre_trat varchar(255),precio_trat float,descripcion_trat varchar(25),datos_prod json);
 

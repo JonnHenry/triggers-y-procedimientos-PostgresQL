@@ -97,7 +97,7 @@ $$ language plpgsql
 
 --Para borrar las funciones y bajar la base de datos del servidor
 DROP Function inicia_tratamiento(id_tratamiento_trat integer);
-DROP FUNCTION ingreso_productos_tratamiento( id_tratamiento_trat,datos_prod json)
+DROP FUNCTION ingreso_productos_tratamiento(id_tratamiento_trat integer,datos_prod json)
 DROP Function termina_tratamiento(id_tratamiento_trat integer, desechados integer[]);
 DROP Function ingreso_tratamiento( nombre_trat varchar(255),precio_trat float,descripcion_trat varchar(25),datos_prod json);
 

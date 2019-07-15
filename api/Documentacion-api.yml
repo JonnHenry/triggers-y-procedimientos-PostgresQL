@@ -6,7 +6,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "ucuencadental.azurewebsites.net"
+# host: "ucuencadental.azurewebsites.net"
 tags:
 - name: "data"
   description: "Operaciones acerca de los productos"
@@ -1320,4 +1320,6 @@ definitions:
       id_tratamiento:
         type: integer
         format: int32
-  
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /jonnathanca/UDentalServerAPI/1.0.0

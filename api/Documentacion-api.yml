@@ -1,0 +1,1323 @@
+swagger: "2.0"
+info:
+  description: "El presente documento es una breve descripción de la documentación de la api de Invetarios/Tratamientos para el consultorio odontologico de la Universidad de Cuenca. La api documentada esta hecha con un servidor de pruebas con azure. "
+  version: "1.0.0"
+  title: "API del Consultorio Odontológico de la Universidad de Cuenca"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "ucuencadental.azurewebsites.net"
+tags:
+- name: "data"
+  description: "Operaciones acerca de los productos"
+- name: "equipos"
+  description: "Operaciones acerca de los equipos"
+- name: "insumos"
+  description: "Operaciones acerca de los insumos"
+- name: "instrumentos"
+  description: "Operaciones acerca de los instrumentos"
+- name: "inventarios"
+  description: "Operaciones acerca de los inventarios"
+- name: "tratamientos"
+  description: "Operaciones acerca de los tratamientos"
+schemes:
+- "https"
+paths:
+  /data/new:
+    post:
+      tags:
+      - "data"
+      summary: "Agregar productos"
+      description: "Este metodo sirve para poder agregar productos siendo estos tipo Equipo,Insumo,Instrumentos. Productos que van a ser agregados a la bodega estos se pueden enviar como un array de objetos con los tipos de modelos como Equipo con categoria:1 y con modelo IngEquipo,Insumo con categoria: 2 y con modelo IngInsumo,Instrumento con categoria: 3 y con modelo IngInstrumento."
+      operationId: "addProducts"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Productos que van a ser agregados a la bodega estos se pueden enviar como un array de objetos con los tipos de modelos como Equipo con categoria:1 y con modelo IngEquipo,Insumo con categoria: 2 y con modelo IngInsumo,Instrumento con categoria: 3 y con modelo IngInstrumento."
+        required: true
+        schema:
+          $ref: "#/definitions/ModelIng"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/IngSuccess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/IngFail"
+  /data/update:
+    post:
+      tags:
+      - "data"
+      summary: "Actualiza los productos"
+      description: "Actualiza los productos ya sea estos Equipos,Insumos,Instrumentos. Productos que van a ser modificados de la bodega estos se pueden enviar como un array de objetos con los tipos de modelos como Equipo con categoria:1 y con modelo IngEquipo,Insumo con categoria: 2 y con modelo IngInsumo,Instrumento con categoria: 3 y con modelo IngInstrumento. En estos modelos se puede enviar los campos a actualizar y los campos que no se desen actualizar no se deberan enviar el sistema sabe de que campos son y los modifica."
+      operationId: "updateProducts"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Productos que van a ser modificados de la bodega estos se pueden enviar como un array de objetos con los tipos de modelos como Equipo con categoria:1 y con modelo IngEquipo,Insumo con categoria: 2 y con modelo IngInsumo,Instrumento con categoria: 3 y con modelo IngInstrumento. En estos modelos se puede enviar los campos a actualizar y los campos que no se desen actualizar no se deberan enviar el sistema sabe de que campos son y los modifica."
+        required: true
+        schema:
+          $ref: "#/definitions/ModelIng"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/UpdateSuccess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/UpdateFail"
+            
+  /data/producto/delete/{proId}:
+    delete:
+      tags:
+      - "data"
+      summary: "Elimina un producto de la bodega"
+      description: "Elimina productos de la bodega ya sea estos tipo Equipo,Instrumento,Insumo, se debe de conocer el id del producto a eliminar."
+      operationId: "deleteProducts"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "proId"
+        in: "path"
+        description: "Producto a ser eliminado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/DeleteSucess'
+        500:
+          description: "Error"
+          schema:
+            $ref: '#/definitions/DeleteFail'
+            
+  /data/producto/restore/{proId}:
+    post:
+      tags:
+      - "data"
+      summary: "Restaura un producto de la bodega"
+      description: "Restaura un producto de la bodega ya sea estos tipo Equipo,Instrumento,Insumo, se debe de conocer el id del producto a restaurar."
+      operationId: "restoreProducts"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "proId"
+        in: "path"
+        description: "Producto a ser restaurado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/RestoredSucess'
+        500:
+          description: "Error"
+          schema:
+            $ref: '#/definitions/RestoredFail'
+  /equipos/all:
+    get:
+      tags:
+      - "equipos"
+      summary: "Obtener los equipos"
+      description: "Obtiene todos los equipos que se encuentrar en la bodega"
+      operationId: "allMedicalTeam"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ModelAll"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+  
+  /equipos/find:
+    post:
+      tags:
+      - "equipos"
+      summary: "Buscar equipos"
+      description: "Busca un equipo por los diferentes campos cumpliendo las condicioes  incluidas en los datos de busqueda. Ingresa los parametros de busqueda de la siguiente manera 'col=value' donde col es la columna a buscar y value el valor a ser buscado"
+      operationId: "findMedicalTeam"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Ingresa los parametros de busqueda de la siguiente manera 'col=value' donde col es la columna a buscar y value el valor a ser buscado"
+        required: true
+        schema:
+          $ref: "#/definitions/FindProducts"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/ProductsFindResponseSucess'
+        500:
+          description: "Error el valor es true"
+          schema:
+            $ref: '#/definitions/ProductsFindResponseFail'
+ 
+  /insumos/all:
+    get:
+      tags:
+      - "insumos"
+      summary: "Obtener los insumos"
+      description: "Obtiene todos los insumos que se encuentrar en la bodega"
+      operationId: "allSupplies"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ModelAll"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+            
+  /insumos/find:
+    post:
+      tags:
+      - "insumos"
+      summary: "Buscar insumos"
+      description: "Busca un insumos por los diferentes campos cumpliendo las condicioes  incluidas en los datos de busqueda. Ingresa los parametros de busqueda de la siguiente manera 'col=value' donde col es la columna a buscar y value el valor a ser buscado"
+      operationId: "findSupplies"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Ingresa los parametros de busqueda de la siguiente manera 'col=value' donde col es la columna a buscar y value el valor a ser buscado"
+        required: true
+        schema:
+          $ref: "#/definitions/FindProducts"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/ProductsFindResponseSucess'
+        500:
+          description: "Error el valor es true"
+          schema:
+            $ref: '#/definitions/ProductsFindResponseFail'
+  
+  /instrumentos/all:
+    get:
+      tags:
+      - "instrumentos"
+      summary: "Obtener los instrumentos"
+      description: "Obtiene todos los instrumentos que se encuentrar en la bodega"
+      operationId: "allInstruments"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ModelAll"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+            
+  /instrumentos/find:
+    post:
+      tags:
+      - "instrumentos"
+      summary: "Buscar instrumentos"
+      description: "Busca un instrumentos por los diferentes campos cumpliendo las condicioes  incluidas en los datos de busqueda. Ingresa los parametros de busqueda de la siguiente manera 'col=value' donde col es la columna a buscar y value el valor a ser buscado"
+      operationId: "findInstruments"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Ingresa los parametros de busqueda de la siguiente manera 'col=value' donde col es la columna a buscar y value el valor a ser buscado"
+        required: true
+        schema:
+          $ref: "#/definitions/FindProducts"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/ProductsFindResponseSucess'
+        500:
+          description: "Error el valor es true"
+          schema:
+            $ref: '#/definitions/ProductsFindResponseFail'
+            
+  /inventarios/control/new:
+    post:
+      tags:
+      - "inventarios"
+      summary: "Crear inventarios de control"
+      description: "Este metodo sirve para poder crear un inventario de control, el cual refleje el estado actual de los productos ya sea esto de equipos,insumos e intrumentos, con la cantidad actual."
+      operationId: "addControlInventory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Agregar un inventario de control de productos"
+        required: true
+        schema:
+          $ref: "#/definitions/InventoryControlNew"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlFail"
+            
+  /inventarios/control/all :
+    get:
+      tags:
+      - "inventarios"
+      summary: "Obtener los inventarios"
+      description: "Obtiene todos los inventarios de control que se han registrado en la base de datos."
+      operationId: "allControlInventory"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlGetSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlGetFail"
+  
+  /inventarios/control/productos/{idInve}:
+    get:
+      tags:
+      - "inventarios"
+      summary: "Obtener los productos de un inventario"
+      description: "Obtiene todos los productos de un inventario que se ha registrado en la base de datos."
+      operationId: "allControlProductsInventory"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "idInve"
+        in: "path"
+        description: "Producto a ser restaurado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlProductsGetSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlGetFail"
+  
+  /inventarios/entrega/new:
+    post:
+      tags:
+      - "inventarios"
+      summary: "Crear inventario de entrega de productos"
+      description: "Este metodo sirve para poder crear un inventario de entrega, con el cual se puede registrar los productos que llegan quien entrega y quien recibe de ya sean estos de tipo equipos,insumos e intrumentos, con la cantidad que se agrega. El nombre que se envia debe de ser unico no se puede repetir."
+      operationId: "addDeliveryInventory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Inventario de entrega de productos"
+        required: true
+        schema:
+          $ref: "#/definitions/InventoryDeliveryProduct"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlFail"
+            
+  /inventarios/entrega/all :
+    get:
+      tags:
+      - "inventarios"
+      summary: "Obtener los inventarios de entrega"
+      description: "Obtiene todos los inventarios de entrega que se han registrado en la base de datos con sus respectivos datos."
+      operationId: "allDeliveryInventory"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseDeliveryInventorySucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+            
+  /inventarios/entrega/productos/all :
+    get:
+      tags:
+      - "inventarios"
+      summary: "Obtener los inventarios de entrega con sus productos"
+      description: "Obtiene todos los inventarios de entrega con sus productos que se han registrado en la base de datos con sus respectivos datos."
+      operationId: "allDeliveryInventoryWithProducts"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseDeliveryWithProducts"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+            
+  /inventarios/entrega/productos/nombre/{nomInvDelvr}:
+    get:
+      tags:
+      - "inventarios"
+      summary: "Obtener los inventarios de entrega con sus productos busca por el nombre del inventario"
+      description: "Obtiene todos los inventarios de entrega con sus productos que se han registrado en la base de datos con sus respectivos datos, se busca por el nombre. "
+      operationId: "allDeliveryInvtWithPrcdtsByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "nomInvDelvr"
+        in: "path"
+        description: "Inventario con productos a ser buscado"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseDeliveryWithProductsByName"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+  
+  /inventarios/entrega/productos/id/{idInvDelvr}:
+    get:
+      tags:
+      - "inventarios"
+      summary: "Obtener los inventarios de entrega con sus productos busca por el id del inventario"
+      description: "Obtiene todos los inventarios de entrega con sus productos que se han registrado en la base de datos con sus respectivos datos. Se encarga de buscar por el id del inventario. "
+      operationId: "allDeliveryInvtWithPrcdtsById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "idInvDelvr"
+        in: "path"
+        description: "Inventario con productos a ser buscado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseDeliveryWithProductsById"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+  
+  /tratamientos/new:
+    post:
+      tags:
+      - "tratamientos"
+      summary: "Crear tratamiento"
+      description: "Este metodo sirve para poder crear un tratamiento con todos los productos y la cantidad necesaria para realizar el mismo."
+      operationId: "addTreatment"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Inventario de entrega de productos"
+        required: true
+        schema:
+          $ref: "#/definitions/RequestMedication"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlFail"
+  
+  /tratamientos/all:
+    get:
+      tags:
+      - "tratamientos"
+      summary: "Obtener todos los tratamientos "
+      description: "Obtener todos los tratamientos que se encuentran registrados en el sistema."
+      operationId: "allTreatment"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseMedicationColumns"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+            
+  /tratamientos/productos/{idTratamiento}:
+    get:
+      tags:
+      - "tratamientos"
+      summary: "Obtener todos los tratamientos con los productos"
+      description: "Obtener el tratamiento a buscar y se devolvera todos los productos de dicho tratamiento."
+      operationId: "getTreatmentWithProductos"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "idTratamiento"
+        in: "path"
+        description: "Id del tratamientoa a ser buscado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseMedicationWithProducts"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorGet"
+  
+  /tratamientos/productos/new:
+    post:
+      tags:
+      - "tratamientos"
+      summary: "Crear tratamiento"
+      description: "Este metodo sirve para poder crear un tratamiento con todos los productos y la cantidad necesaria para realizar el mismo."
+      operationId: "addProductosOfTreatment"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Inventario de entrega de productos"
+        required: true
+        schema:
+          $ref: "#/definitions/RequestAddProductoOfMedication"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlFail"
+            
+  /tratamientos/delete/{tretId}:
+    delete:
+      tags:
+      - "tratamientos"
+      summary: "Elimina un tratamiento que se encuentre registrado"
+      description: "Elimina un tratamiento que se encuentre registrado en el sistema."
+      operationId: "deleteTreatment"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tretId"
+        in: "path"
+        description: "Id del tratamiento a ser eliminado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/DeleteSucess'
+        500:
+          description: "Error"
+          schema:
+            $ref: '#/definitions/DeleteFail'          
+  
+  /tratamientos/productos/delete:
+    delete:
+      tags:
+      - "tratamientos"
+      summary: "Elimina un producto de un tratamiento que se encuentre registrado"
+      description: "Elimina un producto de un tratamiento que se encuentre registrado en el sistema."
+      operationId: "deleteAnProductoOfTreatment"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Informacion necesaria para poder idenficar el inventario y el producto de una manera unica"
+        required: true
+        schema:
+          $ref: "#/definitions/RequestDeleteAnProductOftreatment"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: '#/definitions/DeleteSucess'
+        500:
+          description: "Error"
+          schema:
+            $ref: '#/definitions/DeleteFail'
+            
+  
+  /tratamientos/inicia_tratamiento/{idTreat}:
+    post:
+      tags:
+      - "tratamientos"
+      summary: "Inicia un tratamiento con todo lo necesario para su realización"
+      description: "Este metodo sirve para iniciar un tratamiento y una vez iniciado todos los productos utilizados se restan su cantidad utilzada debido a que se esta usando ese instante dicho producto."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "idTreat"
+        in: "path"
+        description: "Id del tratamiento a ser iniciado"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlFail"
+  
+      
+  /tratamientos/termina_tratamiento:
+    post:
+      tags:
+      - "tratamientos"
+      summary: "Inicia un tratamiento con todo lo necesario para su realización"
+      description: "Este metodo sirve para iniciar un tratamiento y una vez iniciado todos los productos utilizados se restan su cantidad utilzada debido a que se esta usando ese instante dicho producto."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Informacion necesaria para poder idenficar el inventario y el producto de una manera unica"
+        required: true
+        schema:
+          $ref: "#/definitions/RequestEndTreatment"
+      responses:
+        200:
+          description: "Operación exitosa"
+          schema:
+            $ref: "#/definitions/ResponseControlSucess"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ResponseControlFail"    
+      
+definitions:
+  IngEquipo:
+    type: object
+    properties:
+      categoria:
+        type: integer
+        format: int32
+      id:
+        type: integer
+        format: int32
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      marca:
+        type: string
+      observacion:
+        type: string
+      estado:
+        type: string
+        enum: 
+          - Buen estado
+          - Dañado
+          - Reparación
+        default: Buen estado
+      stock:
+        type: integer
+        format: int32
+  IngInstrumento:
+    properties:
+      categoria:
+        type: integer
+        format: int32
+      id:
+        type: integer
+        format: int32
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      observacion:
+        type: string
+      estado:
+        type: string
+        enum: 
+          - Buen estado
+          - Dañado
+          - Reparación
+      stock:
+        type: integer
+        format: int32
+  IngInsumo:
+    type: object
+    properties:
+      categoria:
+        type: integer
+        format: int32
+      id:
+        type: integer
+        format: int32
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      fecha_caducidad:
+        type: string
+        format: date
+      stock:
+        type: integer
+        format: int32
+  IngSuccess:
+    type: object
+    properties:
+      message:
+        type: string
+      insertedAll: 
+        type: boolean
+        default: true
+      idFails:
+        type: array
+        items:
+          type: integer
+          format: int32
+  IngFail:  
+    type: object
+    properties:
+      message:
+        type: string
+      insertedAll: 
+        type: boolean
+        default: false
+      idFails:
+        type: array
+        items:
+          type: integer
+          format: int32
+  UpdateSuccess:
+    type: object
+    properties:
+      message: 
+        type: string
+      updateAll:
+        type: boolean
+      idFails:
+        type: array
+        items: 
+          type: integer
+          format: int32
+  UpdateFail:
+    type: object
+    properties:
+      message: 
+        type: string
+      updateAll:
+        type: boolean
+        default: false
+      idFails:
+        type: array
+        items: 
+          type: integer
+          format: int32
+  DeleteFail:
+    type: object
+    properties:
+      message: 
+        type: string
+      deleted:
+        type: boolean
+        default: false
+  DeleteSucess:
+    type: object
+    properties:
+      message: 
+        type: string
+      deleted:
+        type: boolean
+        default: true
+  RestoredFail:
+    type: object
+    properties:
+      message: 
+        type: string
+      restored:
+        type: boolean
+        default: false
+  RestoredSucess:
+    type: object
+    properties:
+      message: 
+        type: string
+      restored:
+        type: boolean
+        default: true
+  ModelIng:
+    type: object
+    properties:
+      data: 
+        type: array
+        items:
+          $ref: '#/definitions/IngEquipo'
+  ModelUptd:
+    type: object
+    properties:
+      data: 
+        type: array
+        items:
+          $ref: '#/definitions/IngEquipo'
+  FindProducts:
+    type: object
+    properties:
+      colAndValueSearch: 
+        type: array
+        items:
+          type: string
+  getEquipo:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      marca:
+        type: string
+      observacion:
+        type: string
+      estado:
+        type: string
+        enum: 
+          - Buen estado
+          - Dañado
+          - Reparación
+        default: Buen estado
+      stock:
+        type: integer
+        format: int32
+      categoria:
+        type: string
+      fecha_creacion: 
+        type: string
+        format: date
+      fecha_actualizacion: 
+        type: string
+        format: date
+  ModelAll:
+    type: object
+    properties:
+      error: 
+        type: boolean
+        default: false
+      data: 
+        type: array
+        items:
+          $ref: "#/definitions/getEquipo"
+  ErrorGet:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: true
+      data:
+        type: array
+        items: 
+          type: object
+  ProductsFindResponseSucess:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items: 
+          type: object
+      message: 
+        type: string
+  ProductsFindResponseFail:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: true
+      data:
+        type: array
+        items: 
+          type: object
+      message: 
+        type: string
+  InventoryControlNew:
+    type: object
+    properties: 
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      observacion: 
+        type: string
+  ResponseControlSucess:
+    type: object
+    properties:
+      message:
+        type: string
+      error:
+        type: boolean
+        default: false
+        
+      
+  ResponseControlFail:
+    type: object
+    properties:
+      message:
+        type: string
+      error:
+        type: boolean
+        
+  InventoryControlData:
+    type: object
+    properties: 
+      id:
+        type: integer
+        format: int32 
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      observacion: 
+        type: string
+      fecha_creacion:
+        type: string
+        format: date
+      persona_realiza:
+        type: string
+    
+  ResponseControlGetSucess:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/InventoryControlData"
+          
+  ResponseControlGetFail:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          type: object
+          
+  InventoryControlProduct:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32 
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      categoria:
+        type: string
+        enum: 
+          - Equipo
+          - Insumo
+          - Instrumento
+      cantidad:
+        type: integer
+        format: int32 
+  
+  ResponseControlProductsGetSucess:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/InventoryControlProduct"
+  
+  ProductDelivery:
+    type: object
+    properties:
+      id_producto:
+        type: integer
+        format: int32 
+      cantidad:
+        type: integer
+        format: int32 
+        
+  InventoryDeliveryProduct:
+    type: object
+    properties:
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      observacion: 
+        type: string
+      persona_entrega:
+        type: string
+      productos:
+        type: array
+        items: 
+          $ref: "#/definitions/ProductDelivery"
+  
+  InventoryDelivery:
+    type: object
+    properties:
+      id_inventario:
+        type: integer
+        format: int32 
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      observacion: 
+        type: string
+  
+  ResponseDeliveryInventorySucess:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/InventoryDelivery"
+  
+  InventoryDeliveryWithProducts:
+    type: object
+    properties:
+      id_inventario:
+        type: integer
+        format: int32 
+      id_producto:
+        type: integer
+        format: int32
+      nombre_inventario:
+        type: string
+      nombre_producto:
+        type: string
+      descripcion_producto:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      fecha: 
+        type: string
+        format: date
+      persona_entrega:
+        type: string
+      persona_recibe:
+        type: string
+      cantidad_producto:
+        type: integer
+        format: int32 
+  
+  
+  
+  ResponseDeliveryWithProducts:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/InventoryDeliveryWithProducts"
+          
+  InventoryDeliveryWithProductsByName:
+    type: object
+    properties:
+      id_inventario:
+        type: integer
+        format: int32 
+      id_producto:
+        type: integer
+        format: int32
+      nombre_producto:
+        type: string
+      descripcion_producto:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      fecha: 
+        type: string
+        format: date
+      persona_entrega:
+        type: string
+      persona_recibe:
+        type: string
+      cantidad_producto:
+        type: integer
+        format: int32
+          
+  ResponseDeliveryWithProductsByName:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/InventoryDeliveryWithProductsByName"
+          
+  InventoryDeliveryWithProductsById:
+    type: object
+    properties:
+      nombre_inventario:
+        type: string 
+      id_producto:
+        type: integer
+        format: int32
+      nombre_producto:
+        type: string
+      descripcion_producto:
+        type: string
+      precio_unitario:
+        type: number
+        format: double
+      fecha: 
+        type: string
+        format: date
+      persona_entrega:
+        type: string
+      persona_recibe:
+        type: string
+      cantidad_producto:
+        type: integer
+        format: int32
+        
+  ResponseDeliveryWithProductsById:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/InventoryDeliveryWithProductsById"
+  
+  MedicationProducts:
+    type: object
+    properties:
+      id_producto:
+        type: integer
+        format: int32 
+      cantidad:
+        type: integer
+        format: int32 
+          
+  RequestMedication:
+    type: object
+    properties:
+      nombre:
+        type: string
+      precio:
+        type: number
+        format: double
+      descripcion:
+        type: string
+      productos: 
+        type: array
+        items:
+          $ref: "#/definitions/MedicationProducts"
+  
+  MedicationColumns:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32 
+      nombre:
+        type: string
+      precio:
+        type: number
+        format: double
+      descripcion:
+        type: string
+      fecha_creacion: 
+        type: string
+        format: date
+      fecha_actualizacion: 
+        type: string
+        format: date
+  
+  ResponseMedicationColumns:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/MedicationColumns"
+          
+  MedicationWithProducts:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32 
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      categoria:
+        type: string
+      cantidad_producto:
+        type: integer
+        format: int32 
+  
+  ResponseMedicationWithProducts:
+    type: object
+    properties:
+      error:
+        type: boolean
+        default: false
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/MedicationWithProducts" 
+    
+  
+  MedicationAddProductos:
+    type: object
+    properties:
+      id_producto:
+        type: integer
+        format: int32 
+      cantidad:
+        type: integer
+        format: int32 
+  
+  RequestAddProductoOfMedication:
+    type: object
+    properties:
+      id_tratamiento:
+        type: integer
+        format: int32
+      productos: 
+        type: array
+        items:
+          $ref: "#/definitions/MedicationAddProductos"
+          
+  RequestDeleteAnProductOftreatment:
+    type: object
+    properties:
+      id_producto:
+        type: integer
+        format: int32 
+      id_tratamiento:
+        type: integer
+        format: int32  
+        
+  RequestEndTreatment:
+    type: object
+    properties:
+      inservible:
+        type: array
+        items:
+          type: integer
+          format: int32
+      id_tratamiento:
+        type: integer
+        format: int32
+  

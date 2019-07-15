@@ -9,7 +9,7 @@ BEGIN
 	INSERT INTO tratamientos(nombre,precio,descripcion,fecha_creacion,fecha_actualizacion) values(nombre_trat,precio_trat,descripcion_trat, CURRENT_DATE,CURRENT_DATE) RETURNING id INTO id_int;
 	FOR i IN SELECT * FROM json_array_elements(datos_prod)
   	LOOP
-		INSERT INTO tratamiento_productos(id_tratamiento,id_producto,cantidad_producto) values(id_int,(i->>'id')::int,(i->>'cantidad')::int);
+		INSERT INTO tratamiento_productos(id_tratamiento,id_producto,cantidad_producto) values(id_int,(i->>'id_producto')::int,(i->>'cantidad')::int);
   	END LOOP;
 	RETURN TRUE;
 	EXCEPTION
